@@ -1,0 +1,26 @@
+.gsap-reveal-hero {
+  line-height: 1;
+}
+.ftco-animate {
+  opacity: 1;
+  visibility: visible;
+}
+.heading-section h1.big {
+  font-size: 6vw;
+}
+.unslate_co--footer {
+  position: relative!important;
+}
+.unslate_co--site-inner {
+  margin-bottom: 0px;
+}
+.modal-backdrop.show {
+  display: none;
+}
+.form-items h3 {
+  color: #666666;
+  text-transform: uppercase;
+  text-align: center;
+  font-weight: bold;
+  padding-bottom: 27px;
+}
