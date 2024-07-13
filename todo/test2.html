@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Latest compiled and minified CSS -->
+    <link href="bootstrap5.3.3/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Latest compiled JavaScript -->
+    <script src="bootstrap5.3.3/js/bootstrap.bundle.min.js"></script>
+    <script src="js/jquery-3.7.1.min.js"></script>
+    <title>Your Plans</title>
+</head>
+<body>
+    <section class="vh-100 gradient-custom">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col col-xl-10">
+                    <div class="card">
+                        <div class="card-body p-5">
+                            <form id="taskForm" class="d-flex justify-content-center align-items-center mb-4">
+                                <div class="form-outline flex-fill me-2">
+                                    <input type="text" id="taskInput" class="form-control" placeholder="New task..." />
+                                </div>
+                                <div class="form-outline flex-fill me-2">
+                                    <input type="date" id="taskDueDate" class="form-control" />
+                                </div>
+                                <div class="form-outline flex-fill me-2">
+                                    <input type="time" id="taskDueTime" class="form-control" />
+                                </div>
+                                <button type="submit" class="btn btn-info">Add</button>
+                            </form>
+
+                            <!-- Tabs navs -->
+                            <ul class="nav nav-tabs mb-4 pb-2" id="taskTabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link active" id="all-tab" data-bs-toggle="tab" href="#all-tasks" role="tab"
+                                        aria-controls="all-tasks" aria-selected="true">All</a>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link" id="active-tab" data-bs-toggle="tab" href="#active-tasks" role="tab"
+                                        aria-controls="active-tasks" aria-selected="false">Active</a>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link" id="completed-tab" data-bs-toggle="tab" href="#completed-tasks" role="tab"
+                                        aria-controls="completed-tasks" aria-selected="false">Completed</a>
+                                </li>
+                            </ul>
+                            <!-- Tabs navs -->
+
+                            <!-- Tabs content -->
+                            <div class="tab-content" id="taskTabsContent">
+                                <div class="tab-pane fade show active" id="all-tasks" role="tabpanel" aria-labelledby="all-tab">
+                                    <ul class="list-group mb-0" id="allTasksList">
+                                        <!-- Tasks will be added here -->
+                                    </ul>
+                                </div>
+                                <div class="tab-pane fade" id="active-tasks" role="tabpanel" aria-labelledby="active-tab">
+                                    <ul class="list-group mb-0" id="activeTasksList">
+                                        <!-- Active tasks will be added here -->
+                                    </ul>
+                                </div>
+                                <div class="tab-pane fade" id="completed-tasks" role="tabpanel" aria-labelledby="completed-tab">
+                                    <ul class="list-group mb-0" id="completedTasksList">
+                                        <!-- Completed tasks will be added here -->
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- Tabs content -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTasksFromLocalStorage();
+            setAlertsForDueTasks();
+        });
+
+        document.getElementById('taskForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var taskInput = document.getElementById('taskInput');
+            var taskDueDate = document.getElementById('taskDueDate');
+            var taskDueTime = document.getElementById('taskDueTime');
+            var taskText = taskInput.value.trim();
+            var dueDate = taskDueDate.value;
+            var dueTime = taskDueTime.value;
+
+            if (taskText !== "" && dueDate !== "" && dueTime !== "") {
+                var taskItem = createTaskItem(taskText, dueDate, dueTime);
+                document.getElementById('allTasksList').appendChild(taskItem);
+                document.getElementById('activeTasksList').appendChild(createTaskItem(taskText, dueDate, dueTime, false));
+
+                saveTasksToLocalStorage();
+                setAlertsForDueTasks();
+                taskInput.value = '';
+                taskDueDate.value = '';
+                taskDueTime.value = '';
+            }
+        });
+
+        function createTaskItem(taskText, dueDate, dueTime, isCompleted = false) {
+            var taskItem = document.createElement('li');
+            taskItem.className = 'list-group-item d-flex align-items-center border-0 mb-2 rounded';
+            taskItem.style.backgroundColor = '#f4f6f7';
+
+            var checkbox = document.createElement('input');
+            checkbox.className = 'form-check-input me-2';
+            checkbox.type = 'checkbox';
+            checkbox.checked = isCompleted;
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    taskItem.style.textDecoration = 'line-through';
+                    moveToCompleted(taskItem);
+                } else {
+                    taskItem.style.textDecoration = 'none';
+                    moveToActive(taskItem);
+                }
+            });
+
+            var deleteButton = document.createElement('button');
+            deleteButton.className = 'btn btn-danger btn-sm ms-auto';
+            deleteButton.textContent = 'Delete';
+            deleteButton.addEventListener('click', function() {
+                taskItem.remove();
+                saveTasksToLocalStorage();
+            });
+
+            taskItem.appendChild(checkbox);
+            taskItem.appendChild(document.createTextNode(`${taskText} (Due: ${dueDate} ${dueTime})`));
+            taskItem.appendChild(deleteButton);
+
+            if (isCompleted) {
+                taskItem.style.textDecoration = 'line-through';
+            }
+
+            return taskItem;
+        }
+
+        function moveToCompleted(taskItem) {
+            document.getElementById('completedTasksList').appendChild(createTaskItem(taskItem.textContent.split(' (Due: ')[0], true));
+            taskItem.remove();
+            saveTasksToLocalStorage();
+        }
+
+        function moveToActive(taskItem) {
+            document.getElementById('activeTasksList').appendChild(createTaskItem(taskItem.textContent.split(' (Due: ')[0], false));
+            taskItem.remove();
+            saveTasksToLocalStorage();
+        }
+
+        function saveTasksToLocalStorage() {
+            var allTasks = [];
+            var activeTasks = [];
+            var completedTasks = [];
+
+            document.querySelectorAll('#allTasksList li').forEach(function(taskItem) {
+                allTasks.push({
+                    text: taskItem.childNodes[1].textContent.split(' (Due: ')[0],
+                    dueDate: taskItem.childNodes[1].textContent.split(' (Due: ')[1].split(' ')[0],
+                    dueTime: taskItem.childNodes[1].textContent.split(' (Due: ')[1].split(' ')[1],
+                    completed: taskItem.querySelector('input').checked
+                });
+            });
+
+            document.querySelectorAll('#activeTasksList li').forEach(function(taskItem) {
+                activeTasks.push({
+                    text: taskItem.childNodes[1].textContent.split(' (Due: ')[0],
+                    dueDate: taskItem.childNodes[1].textContent.split(' (Due: ')[1].split(' ')[0],
+                    dueTime: taskItem.childNodes[1].textContent.split(' (Due: ')[1].split(' ')[1],
+                    completed: taskItem.querySelector('input').checked
+                });
+            });
+
+            document.querySelectorAll('#completedTasksList li').forEach(function(taskItem) {
+                completedTasks.push({
+                    text: taskItem.childNodes[1].textContent.split(' (Due: ')[0],
+                    dueDate: taskItem.childNodes[1].textContent.split(' (Due: ')[1].split(' ')[0],
+                    dueTime: taskItem.childNodes[1].textContent.split(' (Due: ')[1].split(' ')[1],
+                    completed: taskItem.querySelector('input').checked
+                });
+            });
+
+            localStorage.setItem('allTasks', JSON.stringify(allTasks));
+            localStorage.setItem('activeTasks', JSON.stringify(activeTasks));
+            localStorage.setItem('completedTasks', JSON.stringify(completedTasks));
+        }
+
+        function loadTasksFromLocalStorage() {
+            var allTasks = JSON.parse(localStorage.getItem('allTasks')) || [];
+            var activeTasks = JSON.parse(localStorage.getItem('activeTasks')) || [];
+            var completedTasks = JSON.parse(localStorage.getItem('completedTasks')) || [];
+
+            allTasks.forEach(function(task) {
+                var taskItem = createTaskItem(task.text, task.dueDate, task.dueTime, task.completed);
+                document.getElementById('allTasksList').appendChild(taskItem);
+            });
+
+            activeTasks.forEach(function(task) {
+                var taskItem = createTaskItem(task.text, task.dueDate, task.dueTime, task.completed);
+                document.getElementById('activeTasksList').appendChild(taskItem);
+            });
+
+            completedTasks.forEach(function(task) {
+                var taskItem = createTaskItem(task.text, task.dueDate, task.dueTime, task.completed);
+                document.getElementById('completedTasksList').appendChild(taskItem);
+            });
+        }
+
+        function requestNotificationPermission() {
+            return new Promise((resolve, reject) => {
+                if (Notification.permission === 'granted') {
+                    resolve();
+                } else if (Notification.permission === 'denied') {
+                    reject('Notification permission denied');
+                } else {
+                    Notification.requestPermission().then(permission => {
+                        if (permission === 'granted') {
+                            resolve();
+                        } else {
+                            reject('Notification permission not granted');
+                        }
+                    }).catch(err => reject(err));
+                }
+            });
+        }
+
+        function showNotification(taskText) {
+            if (Notification.permission === 'granted') {
+                var notification = new Notification('Task Due Soon!', {
+                    body: `Task "${taskText}" is due in 2 minutes!`,
+                    icon: 'alarm_icon.png' // Add an icon if you have one
+                });
+
+                notification.onclick = function() {
+                    window.focus();
+                    this.close();
+                };
+            } else {
+                alert(`Task "${taskText}" is due in 2 minutes!`);
+            }
+        }
+
+        function setAlertsForDueTasks() {
+            var allTasks = JSON.parse(localStorage.getItem('allTasks')) || [];
+
+            allTasks.forEach(function(task) {
+                var dueDateTime = new Date(`${task.dueDate}T${task.dueTime}`);
+                var now = new Date();
+                var timeDifference = dueDateTime - now - (2 * 60 * 1000); // Subtract 2 minutes
+
+                if (timeDifference > 0) {
+                    setTimeout(function() {
+                        // showNotification(task.text);
+                        alert("It is time!!!!")
+                    }, timeDifference);
+                }
+            });
+        }
+
+        // Request notification permission on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            requestNotificationPermission().then(() => {
+                loadTasksFromLocalStorage();
+                setAlertsForDueTasks();
+            }).catch(err => {
+                console.error('Notification permission not granted', err);
+            });
+        });
+    </script>
+</body>
+</html>

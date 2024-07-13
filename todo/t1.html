@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Storage</title>
+    <link href="bootstrap5.3.3/css/bootstrap.min.css" rel="stylesheet">
+    <script src="bootstrap5.3.3/js/bootstrap.bundle.min.js"></script>
+    <script src="js/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Text Storage</h1>
+        <form id="textForm" class="mb-4">
+            <div class="form-group">
+                <textarea id="textInput" class="form-control" rows="4" placeholder="Write something..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Post</button>
+        </form>
+        <h2>Stored Texts</h2>
+        <ul id="textList" class="list-group">
+            <!-- Stored texts will be displayed here -->
+        </ul>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTextsFromLocalStorage();
+
+            document.getElementById('textForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                var textInput = document.getElementById('textInput');
+                var textValue = textInput.value.trim();
+
+                if (textValue !== "") {
+                    saveTextToLocalStorage(textValue);
+                    addTextToList(textValue);
+                    alert(`Saved Text: ${textValue}`);
+                    textInput.value = '';
+                }
+            });
+        });
+
+        function saveTextToLocalStorage(text) {
+            var texts = JSON.parse(localStorage.getItem('texts')) || [];
+            texts.push(text);
+            localStorage.setItem('texts', JSON.stringify(texts));
+        }
+
+        function loadTextsFromLocalStorage() {
+            var texts = JSON.parse(localStorage.getItem('texts')) || [];
+            texts.forEach(function(text) {
+                addTextToList(text);
+            });
+        }
+
+        function addTextToList(text) {
+            var textList = document.getElementById('textList');
+            var listItem = document.createElement('li');
+            listItem.className = 'list-group-item';
+            listItem.textContent = text;
+            textList.appendChild(listItem);
+        }
+    </script>
+</body>
+</html>

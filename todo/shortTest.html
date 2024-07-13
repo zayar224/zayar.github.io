@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alarm Clock</title>
+</head>
+<body>
+    <h1>Alarm Clock</h1>
+    <label for="alarmDate">Set Alarm Date:</label>
+    <input type="date" id="alarmDate">
+    <br><br>
+    <label for="alarmTime">Set Alarm Time (HH:MM):</label>
+    <input type="time" id="alarmTime">
+    <button onclick="setAlarm()">Set Alarm</button>
+
+    <script>
+        function setAlarm() {
+            var alarmDateInput = document.getElementById('alarmDate').value;
+            var alarmTimeInput = document.getElementById('alarmTime').value;
+            
+            if (!alarmDateInput || !alarmTimeInput) {
+                alert('Please set a valid date and time for the alarm.');
+                return;
+            }
+
+            var alarmDateTime = new Date(alarmDateInput + 'T' + alarmTimeInput);
+            
+            // Save alarm date and time in local storage
+            localStorage.setItem('alarmDateTime', alarmDateTime.toString());
+
+            // Call checkAlarm immediately to start checking
+            checkAlarm();
+        }
+
+        function checkAlarm() {
+            var alarmDateTimeStr = localStorage.getItem('alarmDateTime');
+            if (!alarmDateTimeStr) return;
+
+            var alarmDateTime = new Date(alarmDateTimeStr);
+
+            var alarmInterval = setInterval(function() {
+                var now = new Date();
+
+                if (now >= alarmDateTime) {
+                    clearInterval(alarmInterval);
+                    localStorage.removeItem('alarmDateTime'); // Clear the alarm from storage
+                    alert('Alarm! Time to wake up!');
+                }
+            }, 1000); // Check every second
+        }
+
+        // Check alarm on page load
+        window.onload = function() {
+            checkAlarm();
+        };
+    </script>
+</body>
+</html>

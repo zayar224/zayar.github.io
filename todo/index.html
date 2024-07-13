@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alarm Clock and Task Manager</title>
+    <!-- Latest compiled and minified CSS -->
+    <link href="bootstrap5.3.3/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Latest compiled JavaScript -->
+    <script src="bootstrap5.3.3/js/bootstrap.bundle.min.js"></script>
+    <script src="js/jquery-3.7.1.min.js"></script>
+    <title>Your Plans</title>
+</head>
+<body>
+    <section class="vh-100 gradient-custom">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col col-xl-10">
+                    <div class="card">
+                        <div class="card-body p-5">
+                            <h2 class="mt-5">Task Manager</h2>
+                            <form id="taskForm" class="d-flex justify-content-center align-items-center mb-4">
+                                <div class="form-outline flex-fill me-2">
+                                    <input type="text" id="taskInput" class="form-control" placeholder="New task...">
+                                </div>
+                                <div class="form-outline flex-fill me-2">
+                                    <input type="date" id="taskDueDate" class="form-control">
+                                </div>
+                                <div class="form-outline flex-fill me-2">
+                                    <input type="time" id="taskDueTime" class="form-control">
+                                </div>
+                                <button type="submit" class="btn btn-info">Add</button>
+                            </form>
+
+                            <!-- Tabs navs -->
+                            <ul class="nav nav-tabs mb-4 pb-2" id="taskTabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link" id="active-tab" data-bs-toggle="tab" href="#active-tasks" role="tab"
+                                        aria-controls="active-tasks" aria-selected="false">Active</a>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link" id="completed-tab" data-bs-toggle="tab" href="#completed-tasks" role="tab"
+                                        aria-controls="completed-tasks" aria-selected="false">Completed</a>
+                                </li>
+                            </ul>
+                            <!-- Tabs navs -->
+
+                            <!-- Tabs content -->
+                            <div class="tab-content" id="taskTabsContent">
+                                <div class="tab-pane fade" id="active-tasks" role="tabpanel" aria-labelledby="active-tab">
+                                    <ul class="list-group mb-0" id="activeTasksList">
+                                        <!-- Active tasks will be added here -->
+                                    </ul>
+                                </div>
+                                <div class="tab-pane fade" id="completed-tasks" role="tabpanel" aria-labelledby="completed-tab">
+                                    <ul class="list-group mb-0" id="completedTasksList">
+                                        <!-- Completed tasks will be added here -->
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- Tabs content -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="js/function.js"></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alarm Clock and Task Manager</title>
+    <!-- Latest compiled and minified CSS -->
+    <link href="bootstrap5.3.3/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Latest compiled JavaScript -->
+    <script src="bootstrap5.3.3/js/bootstrap.bundle.min.js"></script>
+    <script src="js/jquery-3.7.1.min.js"></script>
+    <title>Your Plans</title>
+</head>
+<body>
+    <body>
+        <section class="vh-100 post_bg">
+            <div class="py-5 h-100" id="overlay">
+                <div class="row d-flex justify-content-center align-items-center h-100">
+                    <div class="col col-xl-5">
+                        <div class="card">
+                            <div class="card-body p-5">
+                                <h2 class="mt-5">DROP YOUR WORDS</h2>
+                                <h3 class="mt-5">For Your Lazy Bone Bud..</h3>
+                                <form id="textFormpost" class="mb-4">
+                                    <div class="form-group">
+                                        <textarea id="textInput" class="form-control" rows="4" placeholder="Write something..."></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary mt-2">Post</button>
+                                </form>
+                                <ul id="textList" class="list-group">
+                                    <!-- List items will be added here dynamically -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    <script src="js/postjs.js"></script>
+</body>
+</html>

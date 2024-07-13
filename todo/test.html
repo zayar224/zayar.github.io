@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager</title>
+    <link href="bootstrap5.3.3/css/bootstrap.min.css" rel="stylesheet">
+    <script src="bootstrap5.3.3/js/bootstrap.bundle.min.js"></script>
+    <script src="js/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    <section class="vh-100 gradient-custom">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col col-xl-10">
+                    <div class="card">
+                        <div class="card-body p-5">
+                            <h2 class="mt-5">Task Manager</h2>
+                            <form id="taskForm" class="d-flex justify-content-center align-items-center mb-4">
+                                <div class="form-outline flex-fill me-2">
+                                    <input type="text" id="taskInput" class="form-control" placeholder="New task...">
+                                </div>
+                                <div class="form-outline flex-fill me-2">
+                                    <input type="date" id="taskDueDate" class="form-control">
+                                </div>
+                                <div class="form-outline flex-fill me-2">
+                                    <input type="time" id="taskDueTime" class="form-control">
+                                </div>
+                                <button type="submit" class="btn btn-info">Add</button>
+                            </form>
+
+                            <!-- Tabs navs -->
+                            <ul class="nav nav-tabs mb-4 pb-2" id="taskTabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link active" id="all-tab" data-bs-toggle="tab" href="#all-tasks" role="tab"
+                                        aria-controls="all-tasks" aria-selected="true">All</a>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link" id="active-tab" data-bs-toggle="tab" href="#active-tasks" role="tab"
+                                        aria-controls="active-tasks" aria-selected="false">Active</a>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link" id="completed-tab" data-bs-toggle="tab" href="#completed-tasks" role="tab"
+                                        aria-controls="completed-tasks" aria-selected="false">Completed</a>
+                                </li>
+                            </ul>
+                            <!-- Tabs navs -->
+
+                            <!-- Tabs content -->
+                            <div class="tab-content" id="taskTabsContent">
+                                <div class="tab-pane fade show active" id="all-tasks" role="tabpanel" aria-labelledby="all-tab">
+                                    <ul class="list-group mb-0" id="allTasksList">
+                                        <!-- Tasks will be added here -->
+                                    </ul>
+                                </div>
+                                <div class="tab-pane fade" id="active-tasks" role="tabpanel" aria-labelledby="active-tab">
+                                    <ul class="list-group mb-0" id="activeTasksList">
+                                        <!-- Active tasks will be added here -->
+                                    </ul>
+                                </div>
+                                <div class="tab-pane fade" id="completed-tasks" role="tabpanel" aria-labelledby="completed-tab">
+                                    <ul class="list-group mb-0" id="completedTasksList">
+                                        <!-- Completed tasks will be added here -->
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- Tabs content -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // Task form submission handler
+            const taskForm = document.getElementById('taskForm');
+            taskForm.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent default form submission
+
+                // Get task details from form inputs
+                const taskInput = document.getElementById('taskInput');
+                const taskDueDate = document.getElementById('taskDueDate');
+                const taskDueTime = document.getElementById('taskDueTime');
+
+                const task = {
+                    name: taskInput.value.trim(),
+                    dueDate: taskDueDate.value,
+                    dueTime: taskDueTime.value,
+                    completed: false
+                };
+
+                // Clear input fields after adding task
+                taskInput.value = '';
+                taskDueDate.value = '';
+                taskDueTime.value = '';
+
+                // Add the task to local storage
+                addTask(task);
+
+                // Set alert for task due time
+                setTaskAlert(task);
+
+                // Refresh task lists
+                refreshTaskLists();
+            });
+
+            // Function to add a task to local storage
+            function addTask(task) {
+                let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+                tasks.push(task);
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+            }
+
+            // Function to retrieve tasks from local storage and refresh task lists
+            function refreshTaskLists() {
+                let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+                // Clear existing task lists
+                const activeTasksList = document.getElementById('activeTasksList');
+                const completedTasksList = document.getElementById('completedTasksList');
+                activeTasksList.innerHTML = '';
+                completedTasksList.innerHTML = '';
+
+                // Populate task lists based on task status
+                tasks.forEach(function(task, index) {
+                    const taskItem = document.createElement('li');
+                    taskItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+                    taskItem.textContent = task.name;
+
+                    // Add due date and time if available
+                    if (task.dueDate || task.dueTime) {
+                        const dueDetails = document.createElement('span');
+                        dueDetails.className = 'badge bg-secondary rounded-pill';
+
+                        if (task.dueDate) {
+                            dueDetails.textContent = task.dueDate;
+                        }
+                        if (task.dueTime) {
+                            if (task.dueDate) {
+                                dueDetails.textContent += ' ';
+                            }
+                            dueDetails.textContent += task.dueTime;
+                        }
+
+                        taskItem.appendChild(dueDetails);
+                    }
+
+                    // Add a delete button
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'btn btn-danger btn-sm';
+                    deleteBtn.textContent = 'Delete';
+                    deleteBtn.addEventListener('click', function() {
+                        tasks.splice(index, 1); // Remove task from array
+                        localStorage.setItem('tasks', JSON.stringify(tasks)); // Update local storage
+                        refreshTaskLists(); // Refresh task lists
+                    });
+
+                    taskItem.appendChild(deleteBtn);
+
+                    // Add radio button for completing task
+                    const completeRadio = document.createElement('input');
+                    completeRadio.type = 'radio';
+                    completeRadio.name = 'taskStatus';
+                    completeRadio.className = 'form-check-input ms-3';
+                    completeRadio.id = `completeTask-${index}`;
+                    completeRadio.addEventListener('change', function() {
+                        task.completed = true;
+                        localStorage.setItem('tasks', JSON.stringify(tasks)); // Update local storage
+                        refreshTaskLists(); // Refresh task lists
+                    });
+
+                    const completeLabel = document.createElement('label');
+                    completeLabel.className = 'form-check-label';
+                    completeLabel.setAttribute('for', `completeTask-${index}`);
+                    completeLabel.textContent = 'Complete';
+
+                    taskItem.appendChild(completeRadio);
+                    taskItem.appendChild(completeLabel);
+
+                    // Append task item to appropriate list based on completion status
+                    if (task.completed) {
+                        completedTasksList.appendChild(taskItem);
+                    } else {
+                        activeTasksList.appendChild(taskItem);
+                    }
+                });
+            }
+
+
+            loadTextsFromLocalStorage();
+            document.getElementById('textForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                var textInput = document.getElementById('textInput');
+                var textValue = textInput.value.trim();
+
+                if (textValue !== "") {
+                    saveTextToLocalStorage(textValue);
+                    addTextToList(textValue);
+                    alert(`Saved Text: ${textValue}`);
+                    textInput.value = '';
+                }
+            });
+
+            function saveTextToLocalStorage(text) {
+                var texts = JSON.parse(localStorage.getItem('texts')) || [];
+                texts.push(text);
+                localStorage.setItem('texts', JSON.stringify(texts));
+            }
+
+            function loadTextsFromLocalStorage() {
+                var texts = JSON.parse(localStorage.getItem('texts')) || [];
+                texts.forEach(function(text) {
+                    addTextToList(text);
+                });
+            }
+
+
+            // Function to set alert for task due time
+            function setTaskAlert(task) {
+                if (!task.dueDate || !task.dueTime) return;
+
+                const dueDateTime = new Date(`${task.dueDate}T${task.dueTime}`);
+                const now = new Date();
+
+                // Calculate time difference in milliseconds
+                const timeDiff = dueDateTime.getTime() - now.getTime();
+                console.log(timeDiff)
+
+                const customMs = timeDiff * 2
+
+                console.log(customMs);
+
+                // If task is due within 2 minutes, set an alert
+                if (timeDiff > 0 && timeDiff <= customMs) {
+                    setTimeout(function() {
+                        alert(`Task '${task.name}' is due in 2 minutes!`);
+                    }, timeDiff);
+                }
+            }
+
+            // Initial load: retrieve tasks and refresh lists
+            refreshTaskLists();
+
+            // Switching tabs handler (using Bootstrap 5)
+            const taskTabs = new bootstrap.Tab(document.getElementById('taskTabs'));
+            taskTabs.show(document.querySelector('.nav-link.active'));
+
+            const tabs = document.querySelectorAll('.nav-link');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    taskTabs.show(tab);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
