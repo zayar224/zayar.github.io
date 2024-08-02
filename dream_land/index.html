@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Latest compiled and minified CSS -->
+    <link href="bootstrap5.3.3/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Latest compiled JavaScript -->
+    <script src="bootstrap5.3.3/js/bootstrap.bundle.min.js"></script>
+    <script src="js/jquery-3.7.1.min.js"></script>
+    <script src="js/fabric.min.js"></script>
+    <script
+      defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAi0RCj8aLdKFX-cvYkW6kDveuaUlMnpes&libraries=places&callback=initMap"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+      integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <title>Home|Dream Land</title>
+  </head>
+  <body>
+    <!-- A grey horizontal navbar that becomes vertical on small screens -->
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+      <div class="container-fluid">
+        <div class="col-sm-4">
+          <img src="img/icon.svg" class="logo_img" />
+          <a class="navbar-brand" href="#">Dream Land</a>
+        </div>
+
+        <div class="col-sm-8">
+          <div class="btn-group float-end">
+            <button
+              type="button"
+              class="btn text-light dropdown-toggle"
+              data-bs-toggle="dropdown"
+            >
+              PROFILE
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#">ACCOUNT</a></li>
+              <li><a class="dropdown-item" href="#">YOUR TEAMS</a></li>
+              <li><a class="dropdown-item" href="#">SIGN OUT</a></li>
+            </ul>
+            <button type="button" class="btn text-light">
+              <i class="fas fa-bell"></i>
+            </button>
+            <button
+              type="button"
+              class="btn text-light"
+              data-bs-toggle="popover"
+              data-bs-trigger="hover"
+              data-bs-content="Setting"
+            >
+              <i class="fas fa-cog"></i>
+            </button>
+            <button
+              type="button"
+              id="save"
+              class="btn text-light"
+              style="border: 1px solid #f8f9f8"
+            >
+              Render Your Art
+            </button>
+            <!-- <button type="button" class="btn text-light" id="save">Save as PNG</button> -->
+            <!-- <button id="save">Save as PNG</button> -->
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="col-md-12" id="design_area">
+      <a href="javascript:void(0);" class="icon" onclick="resposiveNav()">
+        <i class="fa fa-bars"></i>
+      </a>
+      <div class="side_nav_1 col-md-1" id="icon_nav">
+        <nav class="navbar bg-dark">
+          <ul class="navbar-nav" style="overflow: hidden">
+            <li class="nav-item py-3">
+              <button
+                type="button"
+                class="btn text-light"
+                onclick="openDesign()"
+              >
+                <i class="fas fa-palette"></i>
+                <span>Design</span>
+              </button>
+              <!-- <a class="nav-link" href="#">Link 1</a> -->
+            </li>
+            <li class="nav-item py-3">
+              <button
+                type="button"
+                class="btn text-light"
+                onclick="openElements()"
+              >
+                <i class="fas fa-th-large"></i>
+                <span>Elements</span>
+              </button>
+            </li>
+            <li class="nav-item py-3">
+              <button type="button" class="btn text-light" onclick="openText()">
+                <i class="fas fa-align-justify"></i>
+                <span>Text</span>
+              </button>
+            </li>
+            <li class="nav-item py-3">
+              <button
+                type="button"
+                class="btn text-light"
+                onclick="openUpload()"
+              >
+                <i class="fas fa-cloud-upload-alt"></i>
+                <span>Upload</span>
+              </button>
+            </li>
+            <li class="nav-item py-3">
+              <button type="button" class="btn text-light" onclick="openDraw()">
+                <i class="fas fa-signature"></i>
+                <span>Draw</span>
+              </button>
+            </li>
+            <li class="nav-item py-3">
+              <button type="button" class="btn text-light">
+                <i class="fas fa-vector-square"></i>
+                <span>Your Designs</span>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="tab_content col-md-2" id="Design">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeDesign()"
+          >&times;</a
+        >
+
+        <input type="text" placeholder="Search.." class="design_search" />
+
+        <img
+          class="img-fluid"
+          id="drag_data"
+          draggable="true"
+          ondragstart="drag(event)"
+          src="img/test_img1.jpg"
+          alt="Test Img 1"
+        />
+        <img
+          class="img-fluid"
+          id="drag_data"
+          draggable="true"
+          ondragstart="drag(event)"
+          src="img/test_img2.png"
+          alt="Test Img 2"
+        />
+        <img
+          class="img-fluid"
+          id="drag_data"
+          draggable="true"
+          ondragstart="drag(event)"
+          src="img/test_img3.png"
+          alt="Test Img 3"
+        />
+        <img
+          class="img-fluid"
+          id="drag_data"
+          draggable="true"
+          ondragstart="drag(event)"
+          src="img/test_img4.jpg"
+          alt="Test Img 4"
+        />
+        <img
+          class="img-fluid"
+          id="drag_data"
+          draggable="true"
+          ondragstart="drag(event)"
+          src="img/test_img5.jpg"
+          alt="Test Img 5"
+        />
+      </div>
+
+      <div class="tab_content col-md-2" id="Elements">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeElements()"
+          >&times;</a
+        >
+
+        <input type="text" placeholder="Search.." class="elements_search" />
+
+        <img
+          class="img-fluid"
+          id="drag_data"
+          draggable="true"
+          ondragstart="drag(event)"
+          src="img/test_img1.jpg"
+          alt="Test Img 1"
+        />
+        <img
+          class="img-fluid"
+          id="drag_data"
+          draggable="true"
+          ondragstart="drag(event)"
+          src="img/test_img2.png"
+          alt="Test Img 2"
+        />
+        <img
+          class="img-fluid"
+          id="drag_data"
+          draggable="true"
+          ondragstart="drag(event)"
+          src="img/test_img3.png"
+          alt="Test Img 3"
+        />
+        <img
+          class="img-fluid"
+          id="drag_data"
+          draggable="true"
+          ondragstart="drag(event)"
+          src="img/test_img4.jpg"
+          alt="Test Img 4"
+        />
+        <img
+          class="img-fluid"
+          id="drag_data"
+          draggable="true"
+          ondragstart="drag(event)"
+          src="img/test_img5.jpg"
+          alt="Test Img 5"
+        />
+      </div>
+
+      <div class="tab_content col-md-2" id="Text">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeText()"
+          >&times;</a
+        >
+
+        <input type="text" placeholder="Search.." class="text_search" />
+
+        <p id="fontDesign" style="font-family: cursive" onclick="addText()">
+          This is test text with font style Cursive
+        </p>
+      </div>
+
+      <div class="tab_content col-md-2" id="Upload">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeUpload()"
+          >&times;</a
+        >
+        <div class="image-container"></div>
+        <div class="drag-area">
+          <div class="icon">
+            <i class="fas fa-images"></i>
+          </div>
+          <span class="header">Drag & Drop</span>
+          <span class="header">or <span class="button">browse</span></span>
+          <input type="file" hidden />
+          <span class="support">Supports: JPEG, JPG, PNG</span>
+        </div>
+      </div>
+
+      <div class="tab_content col-md-2" id="Draw">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeDraw()"
+          >&times;</a
+        >
+        <h3
+          style="
+            padding-bottom: 25px;
+            color: white;
+            font-family: sans-serif;
+            text-transform: uppercase;
+            font-size: 21px;
+            padding-left: 4px;
+          "
+        >
+          Drawing Tools
+        </h3>
+        <label for="brush-color">Brush Color:</label>
+        <input
+          type="color"
+          id="brush-color"
+          value="#000000"
+        /><br /><br /><br />
+        <label for="brush-width">Brush Width:</label>
+        <input
+          type="range"
+          id="brush-width"
+          min="1"
+          max="100"
+          value="5"
+        /><br /><br /><br />
+        <div class="toolbar">
+          <button id="draw"><i class="fas fa-pen fa-flip-vertical"></i></button>
+          <button id="eraser"><i class="fas fa-eraser"></i></button>
+          <div class="cover-tools"></div>
+        </div>
+      </div>
+
+      <div class="col-md-12 bg-light cover_layout_bg">
+        <div
+          id="cover_layout"
+          ondrop="drop(event)"
+          ondragover="allowDrop(event)"
+          contenteditable="true"
+        >
+          <canvas id="canvas" width="407" height="550"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <footer
+      class="d-flex flex-wrap justify-content-between align-items-center py-2 my-4 border-top"
+    >
+      <div class="col-md-4 d-flex align-items-center" bis_skin_checked="1">
+        <a
+          href="/"
+          class="mb-3 me-2 mb-md-0 text-muted text-decoration-none lh-1"
+        >
+          <svg class="bi" width="30" height="24">
+            <use xlink:href="#bootstrap"></use>
+          </svg>
+        </a>
+        <span class="mb-3 mb-md-0 text-muted"
+          >© 2024 | Created By
+          <span style="color: #494a4b; font-weight: bold"
+            >[ Zayar Min Htet ]</span
+          ></span
+        >
+      </div>
+
+      <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
+        <li class="ms-3">
+          <a class="text-muted" href="#">
+            <i class="fab fa-linkedin" width="24" height="24">
+              <use
+                xlink:href="https://www.linkedin.com/in/zayar-min-htet-784760315/"
+              ></use>
+            </i>
+          </a>
+        </li>
+        <li class="ms-3">
+          <a class="text-muted" href="#">
+            <i class="fas fa-user-ninja" width="24" height="24">
+              <use xlink:href="https://zayar224.github.io/"></use>
+            </i>
+          </a>
+        </li>
+        <li class="ms-3">
+          <a class="text-muted" href="#">
+            <i class="fab fa-github" width="24" height="24">
+              <use xlink:href="https://github.com/zayar224"></use>
+            </i>
+          </a>
+        </li>
+      </ul>
+    </footer>
+
+    <script src="js/function.js"></script>
+    <!-- <script src="testjs.js"></script> -->
+  </body>
+</html>
